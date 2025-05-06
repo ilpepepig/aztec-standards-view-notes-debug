@@ -16,11 +16,7 @@ unconstrained fn test_view_notes_success() {
     utils::mint_to_private(env, token_contract_address, owner, amount);
 
     // Transfer exactly 1 note from owner to recipient
-    env.impersonate(owner);
-    Token::at(token_contract_address).transfer_private_to_private(owner, recipient, amount).call(
-        &mut env.private(),
-    );
-    env.advance_block_by(1);
+    utils::transfer_in_private(env, owner, token_contract_address, recipient, amount);
 
     // The owner should own 1 note worth 1000
     let owner_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
@@ -47,11 +43,7 @@ unconstrained fn test_view_notes_fail() {
     utils::mint_to_private(env, token_contract_address, owner, amount);
 
     // Transfer exactly 1 note from owner to recipient
-    env.impersonate(owner);
-    Token::at(token_contract_address).transfer_private_to_private(owner, recipient, amount).call(
-        &mut env.private(),
-    );
-    env.advance_block_by(1);
+    utils::transfer_in_private(env, owner, token_contract_address, recipient, amount);
 
     // The owner should own 1 note worth 1000, but still owns 2 notes according to view_notes
     let owner_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
