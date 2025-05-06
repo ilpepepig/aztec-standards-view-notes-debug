@@ -92,15 +92,21 @@ pub unconstrained fn check_private_balance(
 }
 
 pub unconstrained fn get_private_balance_notes(
+    token_contract_address: AztecAddress,
     account: AztecAddress,
     offset: u32,
 ) -> BoundedVec<UintNote, MAX_NOTES_PER_PAGE> {
+    let current_contract_address = get_contract_address();
+    cheatcodes::set_contract_address(token_contract_address);
+
     let mut options = NoteViewerOptions::new();
     options.set_offset(offset);
     options.set_status(NoteStatus.ACTIVE);
     let private_balances_slot = Token::storage_layout().private_balances.slot;
     let private_balance_slot = derive_storage_slot_in_map(private_balances_slot, account);
-    let notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
-        view_notes(private_balance_slot, options);
+    let notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> = view_notes(private_balance_slot, options);
+
+    cheatcodes::set_contract_address(current_contract_address);
+
     notes
 }

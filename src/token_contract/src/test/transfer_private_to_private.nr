@@ -23,16 +23,14 @@ unconstrained fn test_view_notes_success() {
     env.advance_block_by(1);
 
     // The owner should own 1 note worth 1000
-    env.impersonate(token_contract_address);
     let owner_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
-        utils::get_private_balance_notes(owner, 0);
+        utils::get_private_balance_notes(token_contract_address, owner, 0);
     assert(owner_notes.len() == 1, "Incorrect note count");
     assert(owner_notes.get(0).get_value() == amount, "Incorrect amount");
 
     // The recipient should own 1 note worth 1000
-    env.impersonate(token_contract_address);
     let recipient_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
-        utils::get_private_balance_notes(recipient, 0);
+        utils::get_private_balance_notes(token_contract_address, recipient, 0);
     assert(recipient_notes.len() == 1, "Incorrect transferred note count");
     assert(recipient_notes.get(0).get_value() == amount, "Incorrect transferred amount");
 }
@@ -56,17 +54,15 @@ unconstrained fn test_view_notes_fail() {
     env.advance_block_by(1);
 
     // The owner should own 1 note worth 1000, but still owns 2 notes according to view_notes
-    env.impersonate(token_contract_address);
     let owner_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
-        utils::get_private_balance_notes(owner, 0);
+        utils::get_private_balance_notes(token_contract_address, owner, 0);
     assert(owner_notes.len() == 2, "Incorrect note count");
     assert(owner_notes.get(0).get_value() == amount, "Incorrect amount");
     assert(owner_notes.get(1).get_value() == amount, "Incorrect amount");
 
     // The recipient should own 1 note worth 1000, but owns none according to view_notes
-    env.impersonate(token_contract_address);
     let recipient_notes: BoundedVec<UintNote, MAX_NOTES_PER_PAGE> =
-        utils::get_private_balance_notes(recipient, 0);
+        utils::get_private_balance_notes(token_contract_address, recipient, 0);
     assert(recipient_notes.len() == 0, "Incorrect transferred note count");
 
     // However, the private transfer did happen and they actually own what they are supposed to own
