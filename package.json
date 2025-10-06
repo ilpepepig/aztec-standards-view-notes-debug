@@ -9,20 +9,21 @@
   "scripts": {
     "clean": "rm -rf ./src/artifacts ./target",
     "codegen": "aztec codegen target --outdir src/artifacts",
-    "compile": "aztec-nargo compile",
+    "compile": "aztec-nargo compile && aztec-postprocess-contract",
     "start:pxe": "docker compose -p sandbox -f ~/.aztec/docker-compose.sandbox.yml -f docker-compose.override.yml up",
     "test": "yarn test:nr && yarn test:js",
     "test:js": "NODE_NO_WARNINGS=1 node --experimental-vm-modules $(yarn bin jest) --no-cache --runInBand --config jest.integration.config.json",
     "test:nr": "aztec test",
-    "lint:prettier": "prettier '**/*.{js,ts}' --write"
+    "lint:prettier": "prettier '**/*.{js,ts}' --write",
+    "ccc": "yarn clean && yarn compile && yarn codegen"
   },
   "lint-staged": {
     "*.ts": "prettier --write -u"
   },
   "dependencies": {
-    "@aztec/accounts": "0.86.0",
-    "@aztec/aztec.js": "0.86.0",
-    "@aztec/noir-contracts.js": "0.86.0",
+    "@aztec/accounts": "2.0.3",
+    "@aztec/aztec.js": "2.0.3",
+    "@aztec/noir-contracts.js": "2.0.3",
     "@types/node": "22.5.1"
   },
   "devDependencies": {
